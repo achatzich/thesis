@@ -13,16 +13,15 @@ theoretical results are validated by Monte Carlo simulations.
 
 # Problem Description
 A circular coverage region is considered (R km radius) where there is only one gateway and multiple end devices. 
-The baseline system's model performance is given in the figures below.
+The baseline system's model performance is given in the figures below for two different cell radius, 6 km and 12 km.
 <p float="left">
   <img src="/plots/basic_model.png" width="400" />
   <img src="/plots/basic_model2.png" width="400" /> 
 </p>
 
 In the figures solid lines are obtained via numerical evaluation and, whereas the markers represent simulation results.
-
-- Connection Probability: A node is connected to the gateway if the SNR(Signal-to-Noise Ratio) is above a default threshold.
-- Capture Probability: For a successful reception in the presence of interference, the SIR(Signal-to-Interference Ratio) must exceeds the capture threshold.
+- Connection Probability: A node is connected to the gateway if the SNR (Signal-to-Noise Ratio) is above a default threshold.
+- Capture Probability: For a successful reception in the presence of interference, the SIR (Signal-to-Interference Ratio) must exceeds the capture threshold.
 - Coverage Probability: A node is in coverage if it is connected to the gateway and there is no collision.
 
 # Results
