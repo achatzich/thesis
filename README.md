@@ -11,8 +11,14 @@ theoretical analysis is provided and closed-form expressions are derived for the
 decoding of packets via SIC taking path loss, fading, noise, and interference into account. The
 theoretical results are validated by Monte Carlo simulations.
 
+# Problem Description
+<p float="left">
+  <img src="/plots/basic_model.png" width="400" />
+  <img src="/plots/basic_model2.png" width="400" /> 
+</p>
+
 # Results
-![Basic system 6km radius](./plots/basic_system.png) | ![Basic system 12km radius](./plots/basic_system2.png)
+
 
 # How to run
 
