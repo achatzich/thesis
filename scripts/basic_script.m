@@ -65,40 +65,40 @@ for i=1:length(doo)
     inter_signals = Ned(start);
     
     %Probability if there is no interference
-    Pr0(i)= exp(-a(start));
+    Pr0(i) = exp(-a(start));
     %Probability if there is one interferer 
-    Pr1(i)=a(start)*exp(-a(start));
+    Pr1(i) = a(start) * exp(-a(start));
     %Probabilityif there are more than one interferers
     Pr_bigger_than_one(i) = 1 - Pr0(i)-Pr1(i);
     
     %Path loss attenuation function of the current distance
-    g_doo = kappa*(doo(i)*1000)^(-n);
+    g_doo = kappa * (doo(i) * 1000) ^ (-n);
     
     %Calculate the theoretical curve for SNR (eq. 3.9)
-    qsf = power(10, qo(start)/10);
-    Hdi(i) = exp(-N*qsf/(P*g_doo));
+    qsf = power(10, qo(start) / 10);
+    Hdi(i) = exp(-N * qsf / (P * g_doo));
     
     % Calculate the theoretical curve for SIR (eq. 3.12)
     % Qdi = Qdsic
-    Qdi(i) = exp(-2*pi*2*p*lambda*integral(@(x) x.*(1-1./(1 + w.*(doo(i)./x).^n)),l(start),l(start+1)));
-    Qdi(1)=1;
+    Qdi(i) = exp(-2 * pi * 2 * p * lambda *integral(@(x) x.*(1-1./(1 + w.*(doo(i)./x).^n)),l(start),l(start+1)));
+    Qdi(1) = 1;
    
     % Calculate the theoretical curve for SIR for interferer k*
     %If interfering=1 (eq. 3.36)
-    const = 2*(doo(i)^n)/(l(start+1)^2-l(start)^2);
-    Qdk_1(i) = const*integral(@(x) x./(w.*x.^n+doo(i).^n),l(start),l(start+1));
-    Qdk_1(1)=0;
+    const = 2 * (doo(i)^n) / (l(start+1)^2 - l(start)^2);
+    Qdk_1(i) = const * integral(@(x) x./(w.*x.^n+doo(i).^n),l(start),l(start+1));
+    Qdk_1(1) = 0;
     %If interfering>1 (eq. 3.39)
-    const = 2/(l(start+1)^2-l(start)^2);
-    Qdk_2(i) = const*integral(@(dk) dk./(w.*(dk./doo(i)).^n+1).*exp(-2*pi*2*p*lambda*integral(@(x) x./(1/w.*(x./dk).^n+1),l(start),l(start+1))) ,l(start),l(start+1));   
-    Qdk_2(1)=0;
+    const = 2 / (l(start+1)^2 - l(start)^2);
+    Qdk_2(i) = const * integral(@(dk) dk./(w.*(dk./doo(i)).^n+1).*exp(-2*pi*2*p*lambda*integral(@(x) x./(1/w.*(x./dk).^n+1),l(start),l(start+1))) ,l(start),l(start+1));   
+    Qdk_2(1) = 0;
     
     %Create the channel gain |hi|^2 for the desirable signal (modelled by an exponential random variable of mean 1).
     channel = exprnd(1,1,trials);
     
     % Computation: P[SNRi>=qsfi] = p[|hi|^2 >= N*qsf/(p*g)] - Simulation of connection probability
     c = length(find(channel>=N*qsf/(P*g_doo)));
-    Hdi_sim(i) = c/trials;
+    Hdi_sim(i) = c / trials;
     
 
     %Simulation of capture probability
@@ -113,20 +113,20 @@ for i=1:length(doo)
         interfering = poissrnd(a(start), 1) ;
         
         %Create the channel gain |hk|^2 between each ED k (interfering signal) and GW
-        h_interfering = exprnd(1,1,interfering);
+        h_interfering = exprnd(1, 1, interfering);
         
         %Create random distances in km for the interfering signals
         if start == 1
-            dis = l(start) + (l(start+1)-l(start))*sqrt(rand(1, interfering));
+            dis = l(start) + (l(start+1)-l(start)) * sqrt(rand(1, interfering));
         elseif start > 1
-            dis = sqrt(l(start)^2 + (l(start+1)^2-l(start)^2)*rand(1, interfering));
+            dis = sqrt(l(start)^2 + (l(start+1)^2-l(start)^2) * rand(1, interfering));
         end
 
         %Calculate the path loss attenuation function for each interferer
-        g = kappa*(dis*1000).^(-n);   
+        g = kappa * (dis * 1000).^(-n);   
         
 	%Calculate the mean value of I = sum(P * |hk|^2 * g(dk))
-        I = P*sum(h_interfering.*g);
+        I = P * sum(h_interfering.*g);
        
        	%Computation: P[SIRi>=w] = p[|hi|^2 >= I*w/(P*g)]
         counter(u) = length(find(channel>=w*I/(P*g_doo)));
@@ -136,15 +136,15 @@ for i=1:length(doo)
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
 
 	%Simulate Qdk1
-        if interfering==1
+        if interfering == 1
             counter_sic_only_one(u) = length(find(h_interfering>=w*(channel*g_doo)./g));
         %Simulate Qdk2
-        elseif interfering>1
+        elseif interfering > 1
 	    %Choose random one interferer
-            r= randi(interfering);
+            r = randi(interfering);
             dominant = h_interfering(r).*g(r);
             %Total interference - dominant (chosen) interferer
-            rest_inter = I-P*dominant;
+            rest_inter = I - P * dominant;
             %Examine if the interferer exceeds the SIR threshold
             counter_dom(u) = length(find(P*dominant>=w*(rest_inter+P*channel*g_doo)));
             %Computation: P[SIRi_sic>=w] = p[|hi|^2 >= I_sic*w/(P*g)]
@@ -155,16 +155,16 @@ for i=1:length(doo)
     end
     
     %SIR computational- for desirable signal
-    Qdi_sim(i) = sum(counter)/trials^2; % Computation P[SIRij>=qsfi] = p[|hij|^2 >= w*I/(p*g)]
+    Qdi_sim(i) = sum(counter) / trials^2; % Computation P[SIRij>=qsfi] = p[|hij|^2 >= w*I/(p*g)]
    
     %SIR threshold for dominant interferer - Computational
     %If interfering=1
-    Qdk_1sim(i)= sum(counter_sic_only_one)/trials^2;
+    Qdk_1sim(i) = sum(counter_sic_only_one) / trials^2;
     %If interfering>1
-    Qdk_2sim(i) = sum(counter_dom)/trials^2;
+    Qdk_2sim(i) = sum(counter_dom) / trials^2;
    
     %Success probability (decoding the desirable signal) after SIC
-    Qsic_sim(i) = sum(counter_sic)/trials^2;
+    Qsic_sim(i) = sum(counter_sic) / trials^2;
 
 end
 
