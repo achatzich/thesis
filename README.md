@@ -44,6 +44,6 @@ SIC increases the coverage probability up to 20% when the system radius is 6 km.
 </p>
 
 ## Running
-The [basic_script.m]("scripts/basic_script.m") implements the Monte Carlo simulation of the proposed system
+The [basic_script.m](/scripts/basic_script.m) implements the Monte Carlo simulation of the proposed system
 which validates the mathematical analysis. Executing the script generates the aforementioned plots for a 
 specific radius.
